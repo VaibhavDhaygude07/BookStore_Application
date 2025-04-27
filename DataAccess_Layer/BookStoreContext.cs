@@ -13,5 +13,7 @@ namespace DataAccess_Layer
         public BookStoreContext(DbContextOptions<BookStoreContext> options) : base(options) { }
 
         public DbSet<UserModel> Users { get; set; }
+        public DbSet<AdminModel> Admins { get; set; }
+
     }
 }

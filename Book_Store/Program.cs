@@ -1,6 +1,7 @@
 using BookStore.Services.Services;
 using Bussiness_Layer;
 using Bussiness_Layer.Interfaces;
+using Bussiness_Layer.Services;
 using DataAccess_Layer;
 using DataAccess_Layer.Interfaces;
 using DataAccess_Layer.Models;
@@ -23,6 +24,12 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPasswordHasher<UserModel>, PasswordHasher<UserModel>>();
 builder.Services.AddScoped<JwtHelper>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IPasswordHasher<AdminModel>, PasswordHasher<AdminModel>>();
+builder.Services.AddScoped<EmailService>();
+
+
 
 
 // 3. Add JWT Authentication
