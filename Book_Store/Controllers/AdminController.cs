@@ -14,7 +14,7 @@ namespace Book_Store.Controllers
     {
         private readonly IAdminService _service;
         private readonly JwtHelper _jwtHelper;
-        private readonly EmailService _emailService; // Add EmailService as a dependency
+        private readonly EmailService _emailService;
 
         public AdminController(IAdminService service, JwtHelper jwtHelper, EmailService emailService)
         {
@@ -62,13 +62,13 @@ namespace Book_Store.Controllers
             if (user == null)
                 return NotFound(new { Success = false, Message = "User not found" });
 
-            // Generate the password reset token
+         
             var token = _jwtHelper.GeneratePasswordResetToken(user.EmailId);
 
-            // Create the reset link with the token
+            
             var resetLink = $"{Request.Scheme}://{Request.Host}/api/admin/reset-password?token={token}";
 
-            // Send the reset password link to the user's email
+            
             await _emailService.SendEmailAsync(user.EmailId, "Reset Password", $"Click here to reset your password: <a href=\"{resetLink}\">{resetLink}</a>");
 
             return Ok(new { Success = true, Message = "Reset password link has been sent to your email" });

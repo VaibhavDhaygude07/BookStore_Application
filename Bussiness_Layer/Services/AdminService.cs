@@ -36,16 +36,14 @@ namespace Bussiness_Layer.Services
 
         public Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto, string newPassword)
         {
-            // Implement logic for resetting password with newPassword  
-            // Example:  
+         
             resetPasswordDto.NewPassword = newPassword;
             return _repository.ResetPasswordAsync(resetPasswordDto);
         }
 
         public Task<ResetPasswordDto> GetUserByEmailAsync(string? email)
         {
-            // Implement logic to retrieve user by email  
-            // Example:  
+          
             return Task.FromResult(new ResetPasswordDto { EmailId = email });
         }
     }

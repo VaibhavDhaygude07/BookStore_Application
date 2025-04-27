@@ -50,6 +50,24 @@ namespace DataAccess_Layer.Repository
             return result == PasswordVerificationResult.Success ? user : null;
         }
 
+        public async Task<bool> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.EmailId == forgotPasswordDto.EmailId);
+            return user != null;
+        }
+
+        public async Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
+        {
+            if (resetPasswordDto.NewPassword != resetPasswordDto.ConfirmPassword)
+                throw new Exception("Passwords do not match");
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.EmailId == resetPasswordDto.EmailId);
+            if (user == null) return false;
+            user.Password = _passwordHasher.HashPassword(user, resetPasswordDto.NewPassword);
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }
 
