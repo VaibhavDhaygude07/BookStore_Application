@@ -2,10 +2,7 @@
 using DataAccess_Layer.DTO_s;
 using DataAccess_Layer.Interfaces;
 using DataAccess_Layer.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using DataAccess_Layer.Repository;
 using System.Threading.Tasks;
 
 namespace Bussiness_Layer.Services
@@ -13,10 +10,12 @@ namespace Bussiness_Layer.Services
     public class AdminService : IAdminService
     {
         private readonly IAdminRepository _repository;
+        private readonly IAdminRepository _adminRepository;
 
-        public AdminService(IAdminRepository repository)
+        public AdminService(IAdminRepository repository, IAdminRepository adminRepository)
         {
             _repository = repository;
+            _adminRepository = adminRepository;
         }
 
         public Task RegisterAsync(AdminRegisterDto adminDto)
@@ -34,17 +33,25 @@ namespace Bussiness_Layer.Services
             return _repository.ForgotPasswordAsync(forgotPasswordDto);
         }
 
-        public Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto, string newPassword)
+        public Task<bool> ResetPasswordAsync(string email, string newPassword)
         {
-         
-            resetPasswordDto.NewPassword = newPassword;
-            return _repository.ResetPasswordAsync(resetPasswordDto);
+            return _repository.ResetPasswordAsync(email, newPassword);
         }
 
-        public Task<ResetPasswordDto> GetUserByEmailAsync(string? email)
+        public Task<AdminModel> GetUserByEmailAsync(string email)
         {
-          
-            return Task.FromResult(new ResetPasswordDto { EmailId = email });
+            return _repository.GetUserByEmailAsync(email);
         }
+
+        public async Task<AdminModel> GetAdminByEmailAsync(string email)
+        {
+            return await _adminRepository.GetAdminByEmailAsync(email);
+        }
+
+        public async Task UpdateAdminAsync(AdminModel admin)
+        {
+            await _adminRepository.UpdateAdminAsync(admin);
+        }
+
     }
 }

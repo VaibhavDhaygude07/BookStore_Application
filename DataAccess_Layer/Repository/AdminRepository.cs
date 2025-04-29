@@ -1,25 +1,19 @@
 ﻿using DataAccess_Layer.DTO_s;
 using DataAccess_Layer.Interfaces;
 using DataAccess_Layer.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using BCrypt.Net;
 using System.Threading.Tasks;
 
 namespace DataAccess_Layer.Repository
 {
-    public class AdminRepository: IAdminRepository
+    public class AdminRepository : IAdminRepository
     {
         private readonly BookStoreContext _context;
-        private readonly IPasswordHasher<AdminModel> _passwordHasher;
 
-        public AdminRepository(BookStoreContext context, IPasswordHasher<AdminModel> passwordHasher)
+        public AdminRepository(BookStoreContext context)
         {
             _context = context;
-            _passwordHasher = passwordHasher;
         }
 
         public async Task RegisterAsync(AdminRegisterDto adminDto)
@@ -33,8 +27,8 @@ namespace DataAccess_Layer.Repository
                 EmailId = adminDto.EmailId,
                 MobileNumber = adminDto.MobileNumber,
                 Role = "Admin",
+                Password = BCrypt.Net.BCrypt.HashPassword(adminDto.Password)
             };
-            admin.Password = _passwordHasher.HashPassword(admin, adminDto.Password);
 
             await _context.Admins.AddAsync(admin);
             await _context.SaveChangesAsync();
@@ -45,8 +39,8 @@ namespace DataAccess_Layer.Repository
             var admin = await _context.Admins.FirstOrDefaultAsync(x => x.EmailId == loginDto.EmailId);
             if (admin == null) return null;
 
-            var result = _passwordHasher.VerifyHashedPassword(admin, admin.Password, loginDto.Password);
-            return result == PasswordVerificationResult.Success ? admin : null;
+            bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(loginDto.Password, admin.Password);
+            return isPasswordCorrect ? admin : null;
         }
 
         public async Task<bool> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
@@ -55,19 +49,33 @@ namespace DataAccess_Layer.Repository
             return admin != null;
         }
 
-        public async Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
+        public async Task<bool> ResetPasswordAsync(string email, string newPassword)
         {
-            if (resetPasswordDto.NewPassword != resetPasswordDto.ConfirmPassword)
-                throw new Exception("Passwords do not match");
+            var admin = await _context.Admins.FirstOrDefaultAsync(a => a.EmailId == email);
+            if (admin == null) return false;
 
-            var admin = await _context.Admins.FirstOrDefaultAsync(x => x.EmailId == resetPasswordDto.EmailId);
-            if (admin == null)
-                throw new Exception("Admin not found");
-
-            admin.Password = _passwordHasher.HashPassword(admin, resetPasswordDto.NewPassword);
+            admin.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
             _context.Admins.Update(admin);
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<AdminModel> GetUserByEmailAsync(string email)
+        {
+            return await _context.Admins.FirstOrDefaultAsync(a => a.EmailId == email);
+        }
+
+        public async Task<AdminModel> GetAdminByEmailAsync(string email)
+        {
+           
+            return await _context.Admins.FirstOrDefaultAsync(a => a.EmailId == email);
+        }
+
+        public async Task UpdateAdminAsync(AdminModel admin)
+        {
+            _context.Admins.Update(admin);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

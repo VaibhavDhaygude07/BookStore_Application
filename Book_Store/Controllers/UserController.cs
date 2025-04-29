@@ -50,11 +50,17 @@ namespace Book_Store.Controllers
                 return Unauthorized("Invalid credentials");
 
             var token = _jwtHelper.GenerateToken(user.EmailId, user.Role);
+            var refreshToken = _jwtHelper.GenerateRefreshToken();
+
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await _service.UpdateUserAsync(user);
 
             return Ok(new
             {
                 Message = "Login Successful",
                 Token = token,
+                RefreshToken = refreshToken,
                 Role = user.Role
             });
         }
@@ -80,27 +86,25 @@ namespace Book_Store.Controllers
             return Ok(new { Success = true, Message = "Reset password link has been sent to your email" });
         }
 
-      
+
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
         {
-            var principal = _jwtHelper.ValidatePasswordResetToken(dto.Token);
-            if (principal == null)
-                return BadRequest(new { Success = false, Message = "Invalid token" });
-
-            var email = principal.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
-            var user = await _service.GetUserByEmailAsync(email);
-
-            if (user == null)
-                return NotFound(new { Success = false, Message = "User not found" });
-
             if (!string.Equals(dto.NewPassword?.Trim(), dto.ConfirmPassword?.Trim(), StringComparison.Ordinal))
                 return BadRequest(new { Success = false, Message = "Passwords do not match" });
 
-            await _service.ResetPasswordAsync(user, dto.NewPassword.Trim());
+            var emailClaim = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? dto.EmailId;
+            if (string.IsNullOrEmpty(emailClaim))
+                return BadRequest(new { Success = false, Message = "Invalid or missing email" });
+
+            var isReset = await _service.ResetPasswordAsync(emailClaim, dto.NewPassword.Trim());
+            if (!isReset)
+                return NotFound(new { Success = false, Message = "User not found" });
 
             return Ok(new { Success = true, Message = "Password reset successful" });
         }
+
+
 
     }
 }

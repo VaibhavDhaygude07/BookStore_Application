@@ -14,6 +14,7 @@ namespace DataAccess_Layer.Interfaces
         Task<UserModel> LoginAsync(UserLoginDto loginDto);
 
         Task<bool> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto);
-        Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto);
+        Task<bool> ResetPasswordAsync(string email, string newPassword);
+        Task UpdateUserAsync(UserModel user);
     }
 }

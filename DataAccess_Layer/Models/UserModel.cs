@@ -13,7 +13,10 @@ namespace DataAccess_Layer.Models
         public string EmailId { get; set; }
         public string Password { get; set; }
         public string MobileNumber { get; set; }
-        public string Role { get; set; } 
+        public string Role { get; set; }
+
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
     }
 }
     

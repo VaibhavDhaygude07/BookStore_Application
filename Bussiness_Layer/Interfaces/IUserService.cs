@@ -12,12 +12,10 @@ namespace Bussiness_Layer.Interfaces
     {
         Task RegisterAsync(UserRegisterDto userDto);
         Task<UserModel> LoginAsync(UserLoginDto loginDto);
-
         Task<bool> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto);
-        Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto, string newPassword);
-        Task<ResetPasswordDto> GetUserByEmailAsync(string? email);
-
-
+        Task<bool> ResetPasswordAsync(string email, string newPassword);
+        Task<UserModel> GetUserByEmailAsync(string email);
+        Task UpdateUserAsync(UserModel user);
 
     }
 }

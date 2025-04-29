@@ -1,14 +1,9 @@
 ﻿using DataAccess_Layer.DTO_s;
 using DataAccess_Layer.Models;
+using DataAccess_Layer.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using DataAccess_Layer.Interfaces;
 
 namespace DataAccess_Layer.Repository
 {
@@ -56,18 +51,24 @@ namespace DataAccess_Layer.Repository
             return user != null;
         }
 
-        public async Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
+        public async Task<bool> ResetPasswordAsync(string email, string newPassword)
         {
-            if (resetPasswordDto.NewPassword != resetPasswordDto.ConfirmPassword)
-                throw new Exception("Passwords do not match");
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.EmailId == resetPasswordDto.EmailId);
-            if (user == null) return false;
-            user.Password = _passwordHasher.HashPassword(user, resetPasswordDto.NewPassword);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.EmailId == email);
+            if (user == null)
+                return false;
+
+            user.Password = _passwordHasher.HashPassword(user, newPassword);
+
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return true;
         }
 
+        public async Task UpdateUserAsync(UserModel user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
-
