@@ -30,7 +30,17 @@ namespace Book_Store.Controllers
         {
             try
             {
-              
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Validation Failed",
+                        errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
+                    });
+                }
+
+
                 await _service.RegisterAsync(dto);
                 return Ok("User registered successfully");
             }

@@ -15,11 +15,11 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Configure EF Core DbContext
+
 builder.Services.AddDbContext<BookStoreContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 2. Register your layers in DI
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPasswordHasher<UserModel>, PasswordHasher<UserModel>>();
@@ -30,9 +30,6 @@ builder.Services.AddScoped<IPasswordHasher<AdminModel>, PasswordHasher<AdminMode
 builder.Services.AddScoped<EmailService>();
 
 
-
-
-// 3. Add JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -48,17 +45,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// 4. Add Authorization
+
 builder.Services.AddAuthorization();
 
-// 5. Add controllers and Swagger + Swagger JWT config
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "BookStore API", Version = "v1" });
 
-    // Swagger JWT Auth configuration
+
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -87,14 +84,13 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// 6. Enable Swagger in Development
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// 7. Use Authentication and Authorization middleware
 app.UseRouting();
 
 app.UseAuthentication();

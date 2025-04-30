@@ -89,7 +89,7 @@ namespace Bussiness_Layer
             return principal;
         }
 
-        // ==================== ✅ NEW METHODS FOR REFRESH TOKEN ====================
+       
 
         // Method to get principal (claims) from expired token
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
@@ -100,7 +100,7 @@ namespace Bussiness_Layer
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
-                ValidateLifetime = false // Ignore expiration date
+                ValidateLifetime = false 
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();

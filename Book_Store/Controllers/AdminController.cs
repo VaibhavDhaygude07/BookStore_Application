@@ -21,7 +21,7 @@ namespace Book_Store.Controllers
         {
             _service = service;
             _jwtHelper = jwtHelper;
-            _emailService = emailService; // Initialize EmailService
+            _emailService = emailService; 
         }
 
         [HttpPost("register")]
@@ -29,6 +29,17 @@ namespace Book_Store.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Validation Failed",
+                        errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
+                    });
+                }
+
+
                 await _service.RegisterAsync(dto);
                 return Ok(new { Success = true, Message = "Admin registered successfully", Data = dto });
             }
@@ -71,7 +82,7 @@ namespace Book_Store.Controllers
                 return NotFound(new { Success = false, Message = "User not found" });
 
             var token = _jwtHelper.GeneratePasswordResetToken(user.EmailId);
-            var resetLink = $"{Request.Scheme}://{Request.Host}/reset-password?token={token}"; // (frontend should have /reset-password page)
+            var resetLink = $"{Request.Scheme}://{Request.Host}/reset-password?token={token}";
 
             await _emailService.SendEmailAsync(user.EmailId, "Reset Password", $"Click here to reset your password: <a href=\"{resetLink}\">{resetLink}</a>");
 
