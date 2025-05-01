@@ -52,5 +52,27 @@ namespace DataAccess_Layer.Repository
             return true;
         }
 
+        public async Task<IEnumerable<BookModel>> SearchBooksAsync(string? author)
+        {
+            IQueryable<BookModel> query = _context.Books;
+
+           
+
+            if (!string.IsNullOrEmpty(author))
+                query = query.Where(b => b.Author.Contains(author));
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<BookModel>> SortBooksByPriceAsync(string price)
+        {
+            if (price.ToLower() == "asc")
+                return await _context.Books.OrderBy(b => b.Price).ToListAsync();
+            else if (price.ToLower() == "desc")
+                return await _context.Books.OrderByDescending(b => b.Price).ToListAsync();
+            else
+                throw new ArgumentException("Invalid sort order. Use 'asc' or 'desc'.");
+        }
+
     }
 }

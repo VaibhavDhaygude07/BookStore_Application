@@ -9,5 +9,8 @@ namespace DataAccess_Layer.Interfaces
         Task<BookModel> AddBookAsync(BookModel book);
         Task<BookModel?> UpdateBookAsync(int id, BookModel book);
         Task<bool> DeleteBookAsync(int id);
+
+        Task<IEnumerable<BookModel>> SearchBooksAsync( string? author);
+        Task<IEnumerable<BookModel>> SortBooksByPriceAsync(string price);
     }
 }

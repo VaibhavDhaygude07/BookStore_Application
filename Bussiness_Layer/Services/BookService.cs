@@ -1,6 +1,7 @@
 ﻿using Bussiness_Layer.Interfaces;
 using DataAccess_Layer.Interfaces;
 using DataAccess_Layer.Models;
+using DataAccess_Layer.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,5 +24,15 @@ namespace Bussiness_Layer.Services
         public Task<BookModel> AddBookAsync(BookModel book) => _repository.AddBookAsync(book);
         public Task<BookModel?> UpdateBookAsync(int id, BookModel book) => _repository.UpdateBookAsync(id, book);
         public Task<bool> DeleteBookAsync(int id) => _repository.DeleteBookAsync(id);
+
+        public async Task<IEnumerable<BookModel>> SearchBooksAsync( string? author)
+        {
+            return await _repository.SearchBooksAsync( author);
+        }
+
+        public async Task<IEnumerable<BookModel>> SortBooksByPriceAsync(string price)
+        {
+            return await _repository.SortBooksByPriceAsync(price);
+        }
     }
 }

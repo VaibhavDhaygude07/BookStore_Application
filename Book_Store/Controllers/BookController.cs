@@ -73,5 +73,26 @@ namespace Book_Store.Controllers
             await _service.DeleteBookAsync(id);
             return Ok(new { message = $"Book with ID {id} deleted successfully." });
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchBooks([FromQuery] string? author)
+        {
+            var books = await _service.SearchBooksAsync( author);
+            return Ok(books);
+        }
+
+        [HttpGet("sort")]
+        public async Task<IActionResult> SortBooksByPrice([FromQuery] string price)
+        {
+            try
+            {
+                var books = await _service.SortBooksByPriceAsync(price);
+                return Ok(books);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
