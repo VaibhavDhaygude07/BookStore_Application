@@ -10,11 +10,11 @@ namespace Book_Store.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize] 
-    public class BookController : ControllerBase
+    public class bookController : ControllerBase
     {
         private readonly IBookService _service;
 
-        public BookController(IBookService service)
+        public bookController(IBookService service)
         {
             _service = service;
         }

@@ -56,11 +56,11 @@ namespace Book_Store.Controllers
             if (admin == null)
                 return Unauthorized(new { Success = false, Message = "Invalid credentials" });
 
-            var token = _jwtHelper.GenerateToken(admin.EmailId, admin.Role);
+            var token = _jwtHelper.GenerateToken(admin.Id, admin.EmailId, admin.Role);
             var refreshToken = _jwtHelper.GenerateRefreshToken();
 
             admin.RefreshToken = refreshToken;
-            admin.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7); 
+            admin.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             await _service.UpdateAdminAsync(admin);
 
             return Ok(new
