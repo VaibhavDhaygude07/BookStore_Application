@@ -1,5 +1,6 @@
 ﻿using Bussiness_Layer.Interfaces;
 using Bussiness_Layer.Services;
+using DataAccess_Layer.DTO_s;
 using DataAccess_Layer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -94,5 +95,30 @@ namespace Book_Store.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("pagination")]
+        public IActionResult GetBooksByPageNumber([FromQuery] int pageNumber)
+        {
+            if (pageNumber < 1)
+            {
+                return BadRequest(new ResponseModel<string>
+                {
+                    success = false,
+                    message = "Page number must be greater than 0.",
+                    data = null
+                });
+            }
+
+            var books = _service.GetBooksByPageNumber(pageNumber);
+
+            return Ok(new ResponseModel<List<BookModel>>
+            {
+                success = true,
+                message = $"Books for page {pageNumber} retrieved successfully.",
+                data = books
+            });
+        }
+
+
     }
 }

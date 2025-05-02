@@ -74,5 +74,16 @@ namespace DataAccess_Layer.Repository
                 throw new ArgumentException("Invalid sort order. Use 'asc' or 'desc'.");
         }
 
+        public List<BookModel> GetBooksByPageNumber(int pageNumber)
+        {
+            int pageSize = 6;
+
+            return _context.Books
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
+
+
     }
 }

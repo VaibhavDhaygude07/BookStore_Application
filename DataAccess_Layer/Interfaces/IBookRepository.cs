@@ -12,5 +12,9 @@ namespace DataAccess_Layer.Interfaces
 
         Task<IEnumerable<BookModel>> SearchBooksAsync( string? author);
         Task<IEnumerable<BookModel>> SortBooksByPriceAsync(string price);
+
+        List<BookModel> GetBooksByPageNumber(int pageNumber);
+
+
     }
 }

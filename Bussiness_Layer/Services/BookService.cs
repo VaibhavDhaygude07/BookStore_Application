@@ -34,5 +34,12 @@ namespace Bussiness_Layer.Services
         {
             return await _repository.SortBooksByPriceAsync(price);
         }
+
+        public List<BookModel> GetBooksByPageNumber(int pageNumber)
+        {
+            return _repository.GetBooksByPageNumber(pageNumber);
+        }
+
+
     }
 }
