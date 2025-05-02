@@ -30,6 +30,9 @@ builder.Services.AddScoped<IPasswordHasher<AdminModel>, PasswordHasher<AdminMode
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
+
 
 
 

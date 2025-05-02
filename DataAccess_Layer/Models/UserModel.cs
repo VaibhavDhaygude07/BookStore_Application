@@ -17,6 +17,7 @@ namespace DataAccess_Layer.Models
 
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
+      
     }
 }
     

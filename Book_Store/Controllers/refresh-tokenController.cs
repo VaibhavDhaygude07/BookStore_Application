@@ -43,7 +43,7 @@ public class refresh_tokenController : ControllerBase
             return BadRequest(new { Success = false, Message = "Invalid refresh token" });
         }
 
-        var newAccessToken = _jwtHelper.GenerateToken(user.EmailId, role);
+        var newAccessToken = _jwtHelper.GenerateToken(user.Id,user.EmailId, role);
         var newRefreshToken = _jwtHelper.GenerateRefreshToken();
 
         user.RefreshToken = newRefreshToken;

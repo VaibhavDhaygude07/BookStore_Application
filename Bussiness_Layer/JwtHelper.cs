@@ -19,13 +19,14 @@ namespace Bussiness_Layer
         }
 
         // Method to generate token for authentication
-        public string GenerateToken(string email, string role)
+        public string GenerateToken(int userId, string email, string role)
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email, email),
-                new Claim(ClaimTypes.Role, role),
-            };
+        new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+        new Claim(ClaimTypes.Email, email),
+        new Claim(ClaimTypes.Role, role),
+    };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -89,7 +90,7 @@ namespace Bussiness_Layer
             return principal;
         }
 
-       
+
 
         // Method to get principal (claims) from expired token
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
@@ -100,7 +101,7 @@ namespace Bussiness_Layer
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
-                ValidateLifetime = false 
+                ValidateLifetime = false
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();

@@ -21,10 +21,10 @@ namespace Book_Store.Controllers
         {
             _service = service;
             _jwtHelper = jwtHelper;
-            _emailService = emailService; 
+            _emailService = emailService;
         }
 
-        
+
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserRegisterDto dto)
         {
@@ -46,7 +46,7 @@ namespace Book_Store.Controllers
             }
             catch (Exception ex)
             {
-                
+
                 return BadRequest(ex.Message);
             }
         }
@@ -59,7 +59,7 @@ namespace Book_Store.Controllers
             if (user == null)
                 return Unauthorized("Invalid credentials");
 
-            var token = _jwtHelper.GenerateToken(user.EmailId, user.Role);
+            var token = _jwtHelper.GenerateToken(user.Id, user.EmailId, user.Role);
             var refreshToken = _jwtHelper.GenerateRefreshToken();
 
             user.RefreshToken = refreshToken;
@@ -75,7 +75,7 @@ namespace Book_Store.Controllers
             });
         }
 
-      
+
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordDto dto)
         {
@@ -83,13 +83,13 @@ namespace Book_Store.Controllers
             if (user == null)
                 return NotFound(new { Success = false, Message = "User not found" });
 
-            
+
             var token = _jwtHelper.GeneratePasswordResetToken(user.EmailId);
 
-           
+
             var resetLink = $"{Request.Scheme}://{Request.Host}/api/user/reset-password?token={token}";
 
-        
+
             await _emailService.SendEmailAsync(user.EmailId, "Reset Password", $"Click here to reset your password: <a href=\"{resetLink}\">{resetLink}</a>");
 
 
@@ -118,4 +118,3 @@ namespace Book_Store.Controllers
 
     }
 }
-
