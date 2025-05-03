@@ -42,12 +42,22 @@ namespace Book_Store.Controllers
 
 
                 await _service.RegisterAsync(dto);
-                return Ok("User registered successfully");
+                return Ok(new
+                {
+                    success = true,
+                    message = "User registered successfully",
+                    data = dto  
+                });
             }
             catch (Exception ex)
             {
-
-                return BadRequest(ex.Message);
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Registration failed",
+                    error = ex.Message,
+                    data = (object)null
+                });
             }
         }
 
@@ -55,25 +65,68 @@ namespace Book_Store.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto dto)
         {
-            var user = await _service.LoginAsync(dto);
-            if (user == null)
-                return Unauthorized("Invalid credentials");
-
-            var token = _jwtHelper.GenerateToken(user.Id, user.EmailId, user.Role);
-            var refreshToken = _jwtHelper.GenerateRefreshToken();
-
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-            await _service.UpdateUserAsync(user);
-
-            return Ok(new
+            if (!ModelState.IsValid)
             {
-                Message = "Login Successful",
-                Token = token,
-                RefreshToken = refreshToken,
-                Role = user.Role
-            });
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Validation failed",
+                    errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
+                });
+            }
+
+            try
+            {
+                var user = await _service.GetUserByEmailAsync(dto.EmailId);
+                if (user == null)
+                {
+                    return NotFound(new
+                    {
+                        success = false,
+                        message = "User not found with this email"
+                    });
+                }
+
+                var isPasswordValid = await _service.CheckPasswordAsync(user, dto.Password);
+                if (!isPasswordValid)
+                {
+                    return Unauthorized(new
+                    {
+                        success = false,
+                        message = "Incorrect password"
+                    });
+                }
+
+                var token = _jwtHelper.GenerateToken(user.Id, user.EmailId, user.Role);
+                var refreshToken = _jwtHelper.GenerateRefreshToken();
+
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+                await _service.UpdateUserAsync(user);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Login successful",
+                    data = new
+                    {
+                        token,
+                        refreshToken,
+                        //role = user.Role
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An unexpected error occurred",
+                    error = ex.Message
+                });
+            }
         }
+
 
 
         [HttpPost("forgot-password")]

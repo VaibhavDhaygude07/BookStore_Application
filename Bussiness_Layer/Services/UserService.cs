@@ -4,6 +4,7 @@ using DataAccess_Layer.DTO_s;
 using DataAccess_Layer.Interfaces;
 using DataAccess_Layer.Models;
 using DataAccess_Layer.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -50,5 +51,14 @@ namespace BookStore.Services.Services
         {
             await _repository.UpdateUserAsync(user);
         }
+
+        public async Task<bool> CheckPasswordAsync(UserModel user, string password)
+        {
+            var hasher = new PasswordHasher<UserModel>();
+            var result = hasher.VerifyHashedPassword(user, user.Password, password);
+            return await Task.FromResult(result == PasswordVerificationResult.Success);
+        }
+
+
     }
 }

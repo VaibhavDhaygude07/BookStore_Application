@@ -23,7 +23,7 @@ namespace Book_Store.Controllers
 
 
      
-        [HttpPost("add")]
+        [HttpPost]
         public async Task<IActionResult> AddToCart([FromBody] CartInputModel input)
         {
             if (!ModelState.IsValid)
@@ -36,7 +36,6 @@ namespace Book_Store.Controllers
                 });
             }
 
-            // Fallback claim retrieval
             var userIdClaim = User.FindFirst("id") ??
                               User.FindFirst("sub") ??
                               User.FindFirst(ClaimTypes.NameIdentifier);
@@ -73,7 +72,6 @@ namespace Book_Store.Controllers
                 });
             }
 
-            // Create CartModel
             var cartItem = new CartModel
             {
                 userId = userId,
@@ -84,7 +82,6 @@ namespace Book_Store.Controllers
                 Book = book
             };
 
-            // Add to cart
             var result = await _cartService.AddItemToCart(userId, cartItem);
 
             if (result != null)
