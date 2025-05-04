@@ -17,6 +17,6 @@ namespace Bussiness_Layer.Interfaces
         Task<bool> DeleteCartItem(int cartItemId);
         Task<CartModel> PurchaseCartItem(int cartItemId);
         Task<BookModel> GetBookById(int bookId);
-        //Task<bool> AddItemToCart(int userId, CartInputModel cartModel);
+
     }
 }

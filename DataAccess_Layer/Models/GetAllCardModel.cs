@@ -8,8 +8,9 @@ namespace DataAccess_Layer.Models
 {
     public class GetAllCardModel<T>
     {
+       public List<CartModel> cartItems { get; set; }
         public int totalPrice { get; set; }
 
-        public List<CartModel> cartItems { get; set; }
+        
     }
 }

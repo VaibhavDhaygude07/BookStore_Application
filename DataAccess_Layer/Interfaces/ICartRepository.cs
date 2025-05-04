@@ -9,7 +9,8 @@ namespace DataAccess_Layer.Interfaces
 {
     public interface ICartRepository
     {
-        CartModel AddToCart(CartModel cart);
+        Task<CartModel?> AddToCart(int userId, CartModel cart);
+
         List<CartModel> GetCartItems(int userId);
         CartModel GetCartItemById(int cartItemId);
         CartModel UpdateCart(CartModel cart);

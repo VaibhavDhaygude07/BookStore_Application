@@ -14,8 +14,7 @@ namespace DataAccess_Layer.DTO_s
         [Required(ErrorMessage = "Book ID is required")]
         public int bookId { get; set; }
 
-        [Required(ErrorMessage = "Book quantity is required")]
-        public int bookQuantity { get; set; }
+        
        
     }
 }
