@@ -19,19 +19,42 @@ namespace DataAccess_Layer.Repository
             _context = context;
         }
 
-        public CartModel AddToCart(CartModel cart)
+        public async Task<CartModel?> AddToCart(int userId, CartModel model)
         {
-            // Optionally fetch book price
-            var book = _context.Books.FirstOrDefault(b => b.Id == cart.bookId);
-            if (book != null)
+            var existingCartItem = await _context.Carts
+                .Include(c => c.Book) // FIXED: Include Book to use Book.Price
+                .FirstOrDefaultAsync(ci => ci.userId == userId && ci.bookId == model.bookId && !ci.isPurchased);
+
+            if (existingCartItem != null)
             {
-                cart.price = book.Price * cart.bookQuantity; 
+                existingCartItem.bookQuantity += 1;
+                existingCartItem.price = existingCartItem.Book.Price * existingCartItem.bookQuantity;
+
+                _context.Carts.Update(existingCartItem);
+                await _context.SaveChangesAsync();
+                return existingCartItem;
             }
 
-            _context.Carts.Add(cart);
-            _context.SaveChanges();
-            return cart;
+            var book = await _context.Books.FindAsync(model.bookId);
+            if (book == null)
+                return null;
+
+            var newCartItem = new CartModel
+            {
+                userId = userId,
+                bookId = model.bookId,
+                bookQuantity = 1,
+                price = book.Price,
+                isPurchased = false
+            };
+
+            _context.Carts.Add(newCartItem);
+            await _context.SaveChangesAsync();
+            return newCartItem;
         }
+
+
+
 
         public List<CartModel> GetCartItems(int userId)
         {
@@ -46,6 +69,9 @@ namespace DataAccess_Layer.Repository
             return _context.Carts
                 .Include(c => c.Book)
                 .FirstOrDefault(c => c.cartItemId == cartItemId);
+
+            
+
         }
 
         public CartModel UpdateCart(CartModel cart)
@@ -63,15 +89,30 @@ namespace DataAccess_Layer.Repository
 
         public bool DeleteCartItem(int cartItemId)
         {
-            var item = _context.Carts.FirstOrDefault(c => c.cartItemId == cartItemId);
+            var item = _context.Carts
+                .Include(c => c.Book) // Ensure Book is loaded for price calculation
+                .FirstOrDefault(c => c.cartItemId == cartItemId);
+
             if (item != null)
             {
-                _context.Carts.Remove(item);
+                if (item.bookQuantity > 1)
+                {
+                    item.bookQuantity -= 1;
+                    item.price = item.Book.Price * item.bookQuantity;
+                    _context.Carts.Update(item);
+                }
+                else
+                {
+                    _context.Carts.Remove(item);
+                }
+
                 _context.SaveChanges();
                 return true;
             }
+
             return false;
         }
+
 
         public CartModel PurchaseCartItem(int cartItemId)
         {

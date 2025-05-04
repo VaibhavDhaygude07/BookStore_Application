@@ -34,7 +34,7 @@ namespace Bussiness_Layer.Services
 
         public Task<CartModel> AddItemToCart(int userId, CartModel cartModel)
         {
-            return Task.FromResult(_cartRepository.AddToCart(cartModel));
+            return _cartRepository.AddToCart(userId, cartModel);
         }
 
         public Task<bool> DeleteCartItem(int cartItemId)
@@ -57,16 +57,7 @@ namespace Bussiness_Layer.Services
             return Task.FromResult(_cartRepository.GetBookById(bookId));
         }
 
-        //public Task<bool> AddItemToCart(int userId, CartInputModel cartModel)
-        //{
-        //    var cart = new CartModel
-        //    {
-        //        userId = userId,
-        //        bookId = cartModel.bookId,
-        //        bookQuantity = cartModel.bookQuantity
-        //    };
-        //    return Task.FromResult(_cartRepository.AddToCart(cart) != null);
-        //}
+        
 
     }
 }

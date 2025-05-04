@@ -22,8 +22,8 @@ namespace Book_Store.Controllers
         }
 
 
-     
-        [HttpPost("add")]
+
+        [HttpPost]
         public async Task<IActionResult> AddToCart([FromBody] CartInputModel input)
         {
             if (!ModelState.IsValid)
@@ -36,32 +36,18 @@ namespace Book_Store.Controllers
                 });
             }
 
-            // Fallback claim retrieval
-            var userIdClaim = User.FindFirst("id") ??
-                              User.FindFirst("sub") ??
-                              User.FindFirst(ClaimTypes.NameIdentifier);
+            var userIdClaim = User.FindFirst("id") ?? User.FindFirst("sub") ?? User.FindFirst(ClaimTypes.NameIdentifier);
 
-            if (userIdClaim == null)
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
             {
                 return Unauthorized(new ResponseModel<string>
                 {
                     success = false,
-                    message = "User not authenticated or claim missing",
+                    message = "User not authenticated or invalid claim",
                     data = null
                 });
             }
 
-            if (!int.TryParse(userIdClaim.Value, out int userId))
-            {
-                return Unauthorized(new ResponseModel<string>
-                {
-                    success = false,
-                    message = "Invalid user ID claim",
-                    data = null
-                });
-            }
-
-            // Get book information
             var book = await _cartService.GetBookById(input.bookId);
             if (book == null)
             {
@@ -73,18 +59,17 @@ namespace Book_Store.Controllers
                 });
             }
 
-            // Create CartModel
+            // Always add only 1 quantity
             var cartItem = new CartModel
             {
                 userId = userId,
                 bookId = input.bookId,
-                bookQuantity = input.bookQuantity,
-                price = book.Price * input.bookQuantity,
+                bookQuantity = 1,
+                price = book.Price,
                 isPurchased = false,
                 Book = book
             };
 
-            // Add to cart
             var result = await _cartService.AddItemToCart(userId, cartItem);
 
             if (result != null)
@@ -92,7 +77,7 @@ namespace Book_Store.Controllers
                 return Ok(new ResponseModel<CartModel>
                 {
                     success = true,
-                    message = "Item added to cart successfully",
+                    message = "One item added to cart",
                     data = result
                 });
             }
@@ -107,11 +92,12 @@ namespace Book_Store.Controllers
 
 
 
+
+
         [HttpGet("item/{cartId}")]
         public IActionResult GetCartItemById(int cartId)
         {
             var item = _cartService.GetCartItemById(cartId);
-
             if (item == null)
             {
                 return NotFound(new ResponseModel<string>
@@ -129,6 +115,7 @@ namespace Book_Store.Controllers
                 data = item
             });
         }
+
 
         [HttpPut("{cartId}")]
         public async Task<IActionResult> UpdateCartItem(int cartId, [FromBody] CartModel cartItem)
@@ -181,12 +168,14 @@ namespace Book_Store.Controllers
             var result = await _cartService.DeleteCartItem(cartId);
 
             if (result)
+            {
                 return Ok(new ResponseModel<string>
                 {
                     success = true,
                     message = "Cart item removed successfully",
                     data = null
                 });
+            }
 
             return NotFound(new ResponseModel<string>
             {
@@ -195,6 +184,8 @@ namespace Book_Store.Controllers
                 data = null
             });
         }
+
+
 
         [HttpPost("purchase/{cartItemId}")]
         public async Task<IActionResult> PurchaseCart(int cartItemId)
