@@ -14,6 +14,9 @@ namespace DataAccess_Layer
 
         public DbSet<CartModel> Carts { get; set; }
 
+        public DbSet<OrderModel> Orders { get; set; }
+        public DbSet<CustomerModel> Customers { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
