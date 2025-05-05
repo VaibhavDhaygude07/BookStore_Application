@@ -68,10 +68,11 @@ namespace Book_Store.Controllers
 
             return Ok(new
             {
+                sucess = true,
                 Message = "Login Successful",
                 Token = token,
                 RefreshToken = refreshToken,
-                Role = user.Role
+                //Role = user.Role
             });
         }
 

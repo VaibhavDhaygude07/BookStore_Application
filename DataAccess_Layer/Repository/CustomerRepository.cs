@@ -1,4 +1,6 @@
-﻿using DataAccess_Layer.Models;
+﻿using DataAccess_Layer.Interfaces;
+using DataAccess_Layer.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess_Layer.Repository
 {
-    public class CustomerRepository
+    public class CustomerRepository : ICustomerRepository
     {
         private readonly BookStoreContext _context;
 
@@ -16,40 +18,38 @@ namespace DataAccess_Layer.Repository
             _context = context;
         }
 
-        public CustomerModel AddCustomer(CustomerModel customer)
+        public async Task<CustomerModel> AddCustomerAsync(CustomerModel customer)
         {
             _context.Customers.Add(customer);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return customer;
         }
 
-        public CustomerModel GetCustomerByUserId(int userId)
+        public async Task<CustomerModel> GetCustomerByUserIdAsync(int userId)
         {
-            return _context.Customers.FirstOrDefault(c => c.UserId == userId);
+            return await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId);
         }
 
-        public List<CustomerModel> GetAllCustomers()
+        public async Task<List<CustomerModel>> GetAllCustomersAsync()
         {
-            return _context.Customers.ToList();
+            return await _context.Customers.ToListAsync();
         }
 
-        public CustomerModel UpdateCustomer(CustomerModel customer)
+        public async Task<CustomerModel> UpdateCustomerAsync(CustomerModel customer)
         {
             _context.Customers.Update(customer);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return customer;
         }
 
-        public bool DeleteCustomer(int customerId)
+        public async Task<bool> DeleteCustomerAsync(int customerId)
         {
-            var customer = _context.Customers.FirstOrDefault(c => c.CustomerId == customerId);
-            if (customer != null)
-            {
-                _context.Customers.Remove(customer);
-                _context.SaveChanges();
-                return true;
-            }
-            return false;
+            var customer = await _context.Customers.FindAsync(customerId);
+            if (customer == null) return false;
+
+            _context.Customers.Remove(customer);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
