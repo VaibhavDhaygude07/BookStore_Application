@@ -9,10 +9,10 @@ namespace Bussiness_Layer.Interfaces
 {
     public interface ICustomerService
     {
-        Task<CustomerModel?> AddCustomerAsync(CustomerModel customer);
-        Task<CustomerModel?> GetCustomerByUserIdAsync(int userId);
+        Task<CustomerModel> AddCustomerAsync(CustomerModel customer);
+        Task<CustomerModel> GetCustomerByUserIdAsync(int userId);
         Task<List<CustomerModel>> GetAllCustomersAsync();
-        Task<CustomerModel?> UpdateCustomerAsync(CustomerModel customer);
+        Task<CustomerModel> UpdateCustomerAsync(CustomerModel customer);
         Task<bool> DeleteCustomerAsync(int customerId);
     }
 }

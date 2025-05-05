@@ -18,12 +18,12 @@ namespace Bussiness_Layer.Services
             _customerRepository = customerRepository;
         }
 
-        public async Task<CustomerModel?> AddCustomerAsync(CustomerModel customer)
+        public async Task<CustomerModel> AddCustomerAsync(CustomerModel customer)
         {
             return await _customerRepository.AddCustomerAsync(customer);
         }
 
-        public async Task<CustomerModel?> GetCustomerByUserIdAsync(int userId)
+        public async Task<CustomerModel> GetCustomerByUserIdAsync(int userId)
         {
             return await _customerRepository.GetCustomerByUserIdAsync(userId);
         }
@@ -33,7 +33,7 @@ namespace Bussiness_Layer.Services
             return await _customerRepository.GetAllCustomersAsync();
         }
 
-        public async Task<CustomerModel?> UpdateCustomerAsync(CustomerModel customer)
+        public async Task<CustomerModel> UpdateCustomerAsync(CustomerModel customer)
         {
             return await _customerRepository.UpdateCustomerAsync(customer);
         }

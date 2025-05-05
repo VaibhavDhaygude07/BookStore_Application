@@ -1,4 +1,5 @@
 ﻿using Bussiness_Layer.Interfaces;
+using DataAccess_Layer.DTO_s;
 using DataAccess_Layer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,36 +21,64 @@ namespace Book_Store.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddCustomer([FromBody] CustomerModel model)
+        public async Task<IActionResult> AddCustomer([FromBody] CustomerInputModel input)
         {
-            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            model.UserId = userId;
+            if (!ModelState.IsValid)
+                return BadRequest(new { success = false, message = "Invalid input", errors = ModelState });
 
-            var result = _customerService.AddCustomerAsync(model);
-            return Ok(new { success = true, message = "Customer added successfully", data = result });
+            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var customer = new CustomerModel
+            {
+                UserId = userId,
+                FullName = input.FullName,
+                PhoneNumber = input.PhoneNumber,
+                Address = input.Address,
+                City = input.City,
+                State = input.State
+            };
+
+            var result = await _customerService.AddCustomerAsync(customer);
+            return Ok(new { success = true, message = "Customer added", data = result });
         }
 
-        [HttpGet("profile")]
-        public IActionResult GetCustomer()
+
+        [HttpGet]
+        public async Task<IActionResult> GetCustomer()
         {
             var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var result = _customerService.GetCustomerByUserIdAsync(userId);
+            var result = await _customerService.GetCustomerByUserIdAsync(userId);
 
             if (result == null)
                 return NotFound(new { success = false, message = "Customer not found" });
 
-            return Ok(new { success = true, message = "Customer retrieved", data = result });
+            return Ok(new { success = true, message = "Customer found", data = result });
         }
 
         [HttpPut]
-        public IActionResult UpdateCustomer([FromBody] CustomerModel model)
+        public async Task<IActionResult> UpdateCustomer([FromBody] CustomerInputModel input)
         {
-            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            model.UserId = userId;
+            if (!ModelState.IsValid)
+                return BadRequest(new { success = false, message = "Invalid input", errors = ModelState });
 
-            var result = _customerService.UpdateCustomerAsync(model);
-            return Ok(new { success = true, message = "Customer updated successfully", data = result });
+            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var customerModel = new CustomerModel
+            {
+                CustomerId = input.CustomerId,
+                FullName = input.FullName,
+                PhoneNumber = input.PhoneNumber,
+                Address = input.Address,
+                City = input.City,
+                State = input.State,
+                UserId = userId
+            };
+
+            var result = await _customerService.UpdateCustomerAsync(customerModel);
+            return Ok(new { success = true, message = "Customer updated", data = result });
         }
+
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
