@@ -22,16 +22,15 @@ namespace DataAccess_Layer.Repository
         public async Task<CartModel?> AddToCart(int userId, CartModel model)
         {
             var existingCartItem = await _context.Carts
-                .Include(c => c.Book) // FIXED: Include Book to use Book.Price
+                .Include(c => c.Book)
                 .FirstOrDefaultAsync(ci => ci.userId == userId && ci.bookId == model.bookId && !ci.isPurchased);
 
             if (existingCartItem != null)
             {
                 existingCartItem.bookQuantity += 1;
-                existingCartItem.price = existingCartItem.Book.Price * existingCartItem.bookQuantity;
-
                 _context.Carts.Update(existingCartItem);
                 await _context.SaveChangesAsync();
+              
                 return existingCartItem;
             }
 
@@ -49,18 +48,15 @@ namespace DataAccess_Layer.Repository
             };
 
             _context.Carts.Add(newCartItem);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();           
             return newCartItem;
         }
-
-
-
 
         public List<CartModel> GetCartItems(int userId)
         {
             return _context.Carts
                 .Where(c => c.userId == userId)
-                .Include(c => c.Book) // Eager load book data
+                .Include(c => c.Book) 
                 .ToList();
         }
 

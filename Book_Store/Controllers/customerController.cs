@@ -63,32 +63,45 @@ namespace Book_Store.Controllers
 
             var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            var customerModel = new CustomerModel
-            {
-                CustomerId = input.CustomerId,
-                FullName = input.FullName,
-                PhoneNumber = input.PhoneNumber,
-                Address = input.Address,
-                City = input.City,
-                State = input.State,
-                UserId = userId
-            };
+            
+            var existingCustomer = await _customerService.GetCustomerByUserIdAsync(userId);
+            if (existingCustomer == null)
+                return NotFound(new { success = false, message = "Customer not found" });
 
-            var result = await _customerService.UpdateCustomerAsync(customerModel);
+            // Update existing customer
+            existingCustomer.FullName = input.FullName;
+            existingCustomer.PhoneNumber = input.PhoneNumber;
+            existingCustomer.Address = input.Address;
+            existingCustomer.City = input.City;
+            existingCustomer.State = input.State;
+
+            var result = await _customerService.UpdateCustomerAsync(existingCustomer);
             return Ok(new { success = true, message = "Customer updated", data = result });
         }
 
 
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomer(int id)
+
+        [HttpDelete("{customerId}")]
+       
+        public async Task<IActionResult> DeleteCustomer(int customerId)
         {
-            var success = await _customerService.DeleteCustomerAsync(id);
+            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var customer = await _customerService.GetCustomerByIdAsync(customerId);
+
+            if (customer == null || customer.UserId != userId)
+                return NotFound(new { success = false, message = "Customer not found or unauthorized" });
+
+            var success = await _customerService.DeleteCustomerAsync(customerId);
+
             if (!success)
-                return NotFound(new { success = false, message = "Customer not found" });
+                return BadRequest(new { success = false, message = "Failed to delete customer" });
 
             return Ok(new { success = true, message = "Customer deleted successfully" });
         }
+
+
 
 
     }

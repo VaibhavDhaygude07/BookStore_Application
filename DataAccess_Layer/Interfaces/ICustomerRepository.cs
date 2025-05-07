@@ -14,5 +14,7 @@ namespace DataAccess_Layer.Interfaces
         Task<List<CustomerModel>> GetAllCustomersAsync();
         Task<CustomerModel?> UpdateCustomerAsync(CustomerModel customer);
         Task<bool> DeleteCustomerAsync(int customerId);
+        Task<CustomerModel> GetCustomerByIdAsync(int customerId);
+
     }
 }

@@ -30,6 +30,8 @@ namespace DataAccess_Layer.Models
         [Required(ErrorMessage = "Book status is required")]
         public bool isPurchased { get; set; } = false;
 
+        public decimal totalPrice => price * bookQuantity;
+
         public BookModel Book { get; set; }
     }
 }

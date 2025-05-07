@@ -11,13 +11,13 @@ namespace Book_Store.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class userController : ControllerBase
     {
         private readonly IUserService _service;
         private readonly JwtHelper _jwtHelper;
         private readonly EmailService _emailService;
 
-        public UserController(IUserService service, JwtHelper jwtHelper, EmailService emailService)
+        public userController(IUserService service, JwtHelper jwtHelper, EmailService emailService)
         {
             _service = service;
             _jwtHelper = jwtHelper;
@@ -40,16 +40,25 @@ namespace Book_Store.Controllers
                     });
                 }
 
-
                 await _service.RegisterAsync(dto);
-                return Ok("User registered successfully");
+                return Ok(new
+                {
+                    success = true,
+                    message = "User registered successfully",
+                    data = dto.EmailId  
+                });
             }
             catch (Exception ex)
             {
-
-                return BadRequest(ex.Message);
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "An error occurred while registering",
+                    error = ex.Message
+                });
             }
         }
+
 
 
         [HttpPost("login")]

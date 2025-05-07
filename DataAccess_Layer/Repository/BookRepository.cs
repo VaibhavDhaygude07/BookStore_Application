@@ -66,13 +66,14 @@ namespace DataAccess_Layer.Repository
 
         public async Task<IEnumerable<BookModel>> SortBooksByPriceAsync(string price)
         {
-            if (price.ToLower() == "asc")
+            if (price == "asc")
                 return await _context.Books.OrderBy(b => b.Price).ToListAsync();
-            else if (price.ToLower() == "desc")
+            else if (price == "desc")
                 return await _context.Books.OrderByDescending(b => b.Price).ToListAsync();
             else
                 throw new ArgumentException("Invalid sort order. Use 'asc' or 'desc'.");
         }
+
 
         public List<BookModel> GetBooksByPageNumber(int pageNumber)
         {

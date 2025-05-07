@@ -42,5 +42,11 @@ namespace Bussiness_Layer.Services
         {
             return await _customerRepository.DeleteCustomerAsync(customerId);
         }
+
+        public async Task<CustomerModel> GetCustomerByIdAsync(int customerId)
+        {
+            return await _customerRepository.GetCustomerByIdAsync(customerId);
+        }
+
     }
 }

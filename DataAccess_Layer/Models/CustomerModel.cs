@@ -15,9 +15,6 @@ namespace DataAccess_Layer.Models
        
         public int UserId { get; set; }
 
-        [ForeignKey("UserId")]
-        public UserModel User { get; set; }
-
         [Required(ErrorMessage = "Full name is required.")]
         [StringLength(100, ErrorMessage = "Full name must be between 3 and 100 characters.", MinimumLength = 3)]
         public string FullName { get; set; }

@@ -51,5 +51,11 @@ namespace DataAccess_Layer.Repository
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<CustomerModel> GetCustomerByIdAsync(int customerId)
+        {
+            return await _context.Customers.FirstOrDefaultAsync(c => c.CustomerId == customerId);
+        }
+
     }
 }

@@ -91,6 +91,51 @@ namespace Book_Store.Controllers
         }
 
 
+        [HttpGet("all")]
+        public IActionResult GetAllCartItems()
+        {
+            var userIdClaim = User.FindFirst("id") ?? User.FindFirst("sub") ?? User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Unauthorized(new ResponseModel<string>
+                {
+                    success = false,
+                    message = "User not authenticated",
+                    data = null
+                });
+            }
+
+            var items = _cartService.GetAllCartItems(userId);
+            if (items == null || items.Count == 0)
+            {
+                return Ok(new ResponseModel<GetAllCardModel<CartModel>>
+                {
+                    success = true,
+                    message = "Cart is empty",
+                    data = new GetAllCardModel<CartModel>
+                    {
+                        cartItems = new List<CartModel>(),
+                        totalPrice = 0
+                    }
+                });
+            }
+
+          
+            var totalPrice = items.Sum(i => i.price * i.bookQuantity);
+
+            return Ok(new ResponseModel<GetAllCardModel<CartModel>>
+            {
+                success = true,
+                message = "Cart items fetched successfully",
+                data = new GetAllCardModel<CartModel>
+                {
+                    cartItems = items,
+                    totalPrice = totalPrice
+                }
+            });
+        }
+
 
 
 

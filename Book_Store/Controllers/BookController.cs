@@ -19,67 +19,121 @@ namespace Book_Store.Controllers
             _service = service;
         }
 
-        // Accessible by both Admin and User
         [HttpGet]
         [Authorize(Roles = "Admin,User")]
-        public async Task<ActionResult<IEnumerable<BookModel>>> GetBooks()
+        public async Task<IActionResult> GetBooks()
         {
             var books = await _service.GetAllBooksAsync();
-            return Ok(books);
+            return Ok(new ResponseModel<IEnumerable<BookModel>>
+            {
+                success = true,
+                message = "Books retrieved successfully.",
+                data = books
+            });
         }
 
-        // Accessible by both Admin and User
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin,User")]
-        public async Task<ActionResult<BookModel>> GetBook(int id)
+        public async Task<IActionResult> GetBook(int id)
         {
             var book = await _service.GetBookByIdAsync(id);
-            return book == null ? NotFound() : Ok(book);
+            if (book == null)
+            {
+                return NotFound(new ResponseModel<BookModel>
+                {
+                    success = false,
+                    message = $"Book with ID {id} not found.",
+                    data = null
+                });
+            }
+
+            return Ok(new ResponseModel<BookModel>
+            {
+                success = true,
+                message = "Book retrieved successfully.",
+                data = book
+            });
         }
 
-        // Only Admin can add books
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<BookModel>> CreateBook(BookModel book)
+        public async Task<IActionResult> CreateBook(BookModel book)
         {
             var created = await _service.AddBookAsync(book);
-            return CreatedAtAction(nameof(GetBook), new { id = created.Id }, created);
+            return CreatedAtAction(nameof(GetBook), new { id = created.Id }, new ResponseModel<BookModel>
+            {
+                success = true,
+                message = "Book created successfully.",
+                data = created
+            });
         }
 
-        // Only Admin can update books
-        [HttpPut("{id}")]
+        [HttpPut]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateBook(int id, BookModel book)
         {
             var updated = await _service.UpdateBookAsync(id, book);
-            return updated == null ? NotFound() : Ok(updated);
+            if (updated == null)
+            {
+                return NotFound(new ResponseModel<BookModel>
+                {
+                    success = false,
+                    message = $"Book with ID {id} not found.",
+                    data = null
+                });
+            }
+
+            return Ok(new ResponseModel<BookModel>
+            {
+                success = true,
+                message = "Book updated successfully.",
+                data = updated
+            });
         }
 
-        // Only Admin can delete books
-        [HttpDelete("{id}")]
+        [HttpDelete]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteBook(int id)
         {
             if (id <= 0)
             {
-                return BadRequest(new { message = "Invalid book ID." });
+                return BadRequest(new ResponseModel<string>
+                {
+                    success = false,
+                    message = "Invalid book ID.",
+                    data = null
+                });
             }
 
             var success = await _service.DeleteBookAsync(id);
-            if (GetBooks == null)
+            if (!success)
             {
-                return NotFound(new { message = $"Book with ID {id} not found." });
+                return NotFound(new ResponseModel<string>
+                {
+                    success = false,
+                    message = $"Book with ID {id} not found.",
+                    data = null
+                });
             }
 
-            await _service.DeleteBookAsync(id);
-            return Ok(new { message = $"Book with ID {id} deleted successfully." });
+            return Ok(new ResponseModel<string>
+            {
+                success = true,
+                message = $"Book with ID {id} deleted successfully.",
+                data = null
+            });
         }
 
         [HttpGet("search")]
         public async Task<IActionResult> SearchBooks([FromQuery] string? author)
         {
-            var books = await _service.SearchBooksAsync( author);
-            return Ok(books);
+            var books = await _service.SearchBooksAsync(author);
+            return Ok(new ResponseModel<IEnumerable<BookModel>>
+            {
+                success = true,
+                message = "Search completed.",
+                data = books
+            });
         }
 
         [HttpGet("sort")]
@@ -88,13 +142,24 @@ namespace Book_Store.Controllers
             try
             {
                 var books = await _service.SortBooksByPriceAsync(price);
-                return Ok(books);
+                return Ok(new ResponseModel<IEnumerable<BookModel>>
+                {
+                    success = true,
+                    message = $"Books sorted by {price} price.",
+                    data = books
+                });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new ResponseModel<string>
+                {
+                    success = false,
+                    message = ex.Message,
+                    data = null
+                });
             }
         }
+
 
         [HttpGet("pagination")]
         public IActionResult GetBooksByPageNumber([FromQuery] int pageNumber)
@@ -110,8 +175,7 @@ namespace Book_Store.Controllers
             }
 
             var books = _service.GetBooksByPageNumber(pageNumber);
-
-            return Ok(new ResponseModel<List<BookModel>>
+            return Ok(new ResponseModel<IEnumerable<BookModel>>
             {
                 success = true,
                 message = $"Books for page {pageNumber} retrieved successfully.",

@@ -11,13 +11,13 @@ namespace Book_Store.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AdminController : ControllerBase
+    public class adminController : ControllerBase
     {
         private readonly IAdminService _service;
         private readonly JwtHelper _jwtHelper;
         private readonly EmailService _emailService;
 
-        public AdminController(IAdminService service, JwtHelper jwtHelper, EmailService emailService)
+        public adminController(IAdminService service, JwtHelper jwtHelper, EmailService emailService)
         {
             _service = service;
             _jwtHelper = jwtHelper;
