@@ -44,6 +44,10 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader());
 });
 
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
+
 
 
 

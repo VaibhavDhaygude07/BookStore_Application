@@ -1,4 +1,7 @@
-﻿using DataAccess_Layer.Interfaces;
+
+﻿using Bussiness_Layer.Interfaces;
+using DataAccess_Layer.Interfaces;
+
 using DataAccess_Layer.Models;
 using System;
 using System.Collections.Generic;
@@ -8,7 +11,9 @@ using System.Threading.Tasks;
 
 namespace Bussiness_Layer.Services
 {
-    public class OrderService
+
+    public class OrderService : IOrderService
+
     {
         private readonly IOrderRepository _orderRepository;
 
@@ -17,19 +22,17 @@ namespace Bussiness_Layer.Services
             _orderRepository = orderRepository;
         }
 
-        public Task<bool> AddOrderAsync(int userId)
+
+
+        public async Task<List<CartModel>> GetPurchasedOrdersAsync(int userId)
         {
-            return _orderRepository.PlaceOrderAsync(userId);
+            return await _orderRepository.GetPurchasedOrdersAsync(userId);
         }
 
-        public IEnumerable<OrderModel> GetUserOrders(int userId)
+        public async Task<List<CartModel>> PlaceOrderAsync(int userId)
         {
-            return _orderRepository.GetOrdersByUserId(userId);
-        }
+            return await _orderRepository.PlaceOrderAsync(userId);
 
-        public OrderModel GetUserOrderById(int userId, int orderId)
-        {
-            return _orderRepository.GetOrderById(userId, orderId);
         }
     }
 }

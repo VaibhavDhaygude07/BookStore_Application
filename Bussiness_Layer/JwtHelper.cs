@@ -76,6 +76,7 @@ namespace Bussiness_Layer
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
+
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();

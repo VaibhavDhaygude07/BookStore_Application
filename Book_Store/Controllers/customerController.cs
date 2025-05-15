@@ -20,7 +20,7 @@ namespace Book_Store.Controllers
             _customerService = customerService;
         }
 
-        [HttpPost]
+        [HttpPost("customer")]
         public async Task<IActionResult> AddCustomer([FromBody] CustomerInputModel input)
         {
             if (!ModelState.IsValid)
@@ -43,6 +43,7 @@ namespace Book_Store.Controllers
         }
 
 
+
         [HttpGet]
         public async Task<IActionResult> GetCustomer()
         {
@@ -54,6 +55,19 @@ namespace Book_Store.Controllers
 
             return Ok(new { success = true, message = "Customer found", data = result });
         }
+
+        [HttpGet("{customerId}")]
+        [Authorize(Roles = "Admin")] // Optional: only allow admins
+        public async Task<IActionResult> GetCustomerById(int customerId)
+        {
+            var result = await _customerService.GetCustomerByIdAsync(customerId);
+
+            if (result == null)
+                return NotFound(new { success = false, message = "Customer not found" });
+
+            return Ok(new { success = true, message = "Customer retrieved", data = result });
+        }
+
 
         [HttpPut]
         public async Task<IActionResult> UpdateCustomer([FromBody] CustomerInputModel input)

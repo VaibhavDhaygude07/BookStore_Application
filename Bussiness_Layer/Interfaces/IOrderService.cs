@@ -9,8 +9,9 @@ namespace Bussiness_Layer.Interfaces
 {
     public interface IOrderService
     {
-        Task<bool> AddOrderAsync(int userId);
-        IEnumerable<OrderModel> GetUserOrders(int userId);
-        OrderModel GetUserOrderById(int userId, int orderId);
+
+        Task<List<CartModel>> GetPurchasedOrdersAsync(int userId);
+        Task<List<CartModel>> PlaceOrderAsync(int userId);
+
     }
 }

@@ -9,8 +9,9 @@ namespace DataAccess_Layer.Interfaces
 {
     public interface IOrderRepository
     {
-        Task<bool> PlaceOrderAsync(int userId);
-        IEnumerable<OrderModel> GetOrdersByUserId(int userId);
-        OrderModel GetOrderById(int userId, int orderId);
+
+        Task<List<CartModel>> GetPurchasedOrdersAsync(int userId);
+        Task<List<CartModel>> PlaceOrderAsync(int userId); 
+
     }
 }
