@@ -15,6 +15,8 @@ namespace DataAccess_Layer.Interfaces
         CartModel GetCartItemById(int cartItemId);
         CartModel UpdateCart(CartModel cart);
         bool DeleteCartItem(int cartItemId);
+       
+
         CartModel PurchaseCartItem(int cartItemId);
         BookModel GetBookById(int bookId);
 

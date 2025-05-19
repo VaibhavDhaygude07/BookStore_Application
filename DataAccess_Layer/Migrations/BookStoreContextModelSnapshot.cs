@@ -23,275 +23,153 @@ namespace DataAccess_Layer.Migrations
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("DataAccess_Layer.Models.AdminModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("EmailId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MobileNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("RefreshTokenExpiryTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Admins");
-                });
+            {
+                b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                b.Property<string>("EmailId").IsRequired().HasColumnType("nvarchar(max)");
+                b.Property<string>("FullName").IsRequired().HasColumnType("nvarchar(max)");
+                b.Property<string>("MobileNumber").IsRequired().HasColumnType("nvarchar(max)");
+                b.Property<string>("Password").IsRequired().HasColumnType("nvarchar(max)");
+                b.Property<string>("RefreshToken").HasColumnType("nvarchar(max)");
+                b.Property<DateTime>("RefreshTokenExpiryTime").HasColumnType("datetime2");
+                b.Property<string>("Role").IsRequired().HasColumnType("nvarchar(max)");
+                b.HasKey("Id");
+                b.ToTable("Admins");
+            });
 
             modelBuilder.Entity("DataAccess_Layer.Models.BookModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("AdminUserId")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("admin_user_id");
-
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("author");
-
-                    b.Property<string>("BookImage")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)")
-                        .HasColumnName("bookImage");
-
-                    b.Property<string>("BookName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("bookName");
-
-                    b.Property<DateTime>("CreatedAtDate")
-                        .HasMaxLength(50)
-                        .HasColumnType("datetime2")
-                        .HasColumnName("createdAt_date");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(750)
-                        .HasColumnType("nvarchar(750)")
-                        .HasColumnName("description");
-
-                    b.Property<int>("DiscountPrice")
-                        .HasColumnType("int")
-                        .HasColumnName("discountPrice");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("int")
-                        .HasColumnName("price");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int")
-                        .HasColumnName("quantity");
-
-                    b.Property<DateTime?>("UpdatedAtDate")
-                        .HasMaxLength(50)
-                        .HasColumnType("datetime2")
-                        .HasColumnName("updatedAt_date");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("books", (string)null);
-                });
+            {
+                b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                b.Property<string>("AdminUserId").IsRequired().HasMaxLength(50).HasColumnType("nvarchar(50)").HasColumnName("admin_user_id");
+                b.Property<string>("Author").IsRequired().HasMaxLength(50).HasColumnType("nvarchar(50)").HasColumnName("author");
+                b.Property<string>("BookImage").IsRequired().HasMaxLength(300).HasColumnType("nvarchar(300)").HasColumnName("bookImage");
+                b.Property<string>("BookName").IsRequired().HasMaxLength(50).HasColumnType("nvarchar(50)").HasColumnName("bookName");
+                b.Property<DateTime>("CreatedAtDate").HasMaxLength(50).HasColumnType("datetime2").HasColumnName("createdAt_date");
+                b.Property<string>("Description").IsRequired().HasMaxLength(750).HasColumnType("nvarchar(750)").HasColumnName("description");
+                b.Property<int>("DiscountPrice").HasColumnType("int").HasColumnName("discountPrice");
+                b.Property<int>("Price").HasColumnType("int").HasColumnName("price");
+                b.Property<int>("Quantity").HasColumnType("int").HasColumnName("quantity");
+                b.Property<DateTime?>("UpdatedAtDate").HasMaxLength(50).HasColumnType("datetime2").HasColumnName("updatedAt_date");
+                b.HasKey("Id");
+                b.ToTable("books", (string)null);
+            });
 
             modelBuilder.Entity("DataAccess_Layer.Models.CartModel", b =>
-                {
-                    b.Property<int>("cartItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("cartItemId"), 1L, 1);
-
-                    b.Property<int>("bookId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("bookQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("isPurchased")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("price")
-                        .HasColumnType("int");
-
-                    b.Property<int>("userId")
-                        .HasColumnType("int");
-
-                    b.HasKey("cartItemId");
-
-                    b.HasIndex("bookId");
-
-                    b.ToTable("Carts");
-                });
+            {
+                b.Property<int>("cartItemId").ValueGeneratedOnAdd().HasColumnType("int");
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("cartItemId"), 1L, 1);
+                b.Property<int>("bookId").HasColumnType("int");
+                b.Property<int>("bookQuantity").HasColumnType("int");
+                b.Property<bool>("isPurchased").HasColumnType("bit");
+                b.Property<int>("price").HasColumnType("int");
+                b.Property<int>("userId").HasColumnType("int");
+                b.HasKey("cartItemId");
+                b.HasIndex("bookId");
+                b.ToTable("Carts");
+            });
 
             modelBuilder.Entity("DataAccess_Layer.Models.CustomerModel", b =>
-                {
-                    b.Property<int>("CustomerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"), 1L, 1);
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CustomerId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Customers");
-                });
+            {
+                b.Property<int>("CustomerId").ValueGeneratedOnAdd().HasColumnType("int");
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"), 1L, 1);
+                b.Property<string>("Address").IsRequired().HasMaxLength(250).HasColumnType("nvarchar(250)");
+                b.Property<string>("City").HasColumnType("nvarchar(max)");
+                b.Property<string>("FullName").IsRequired().HasMaxLength(100).HasColumnType("nvarchar(100)");
+                b.Property<string>("PhoneNumber").IsRequired().HasColumnType("nvarchar(max)");
+                b.Property<string>("State").HasColumnType("nvarchar(max)");
+                b.Property<int>("UserId").HasColumnType("int");
+                b.HasKey("CustomerId");
+                b.HasIndex("UserId");
+                b.ToTable("Customers");
+            });
 
             modelBuilder.Entity("DataAccess_Layer.Models.OrderModel", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Orders");
-                });
+            {
+                b.Property<int>("OrderId").ValueGeneratedOnAdd().HasColumnType("int");
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
+                b.Property<bool>("IsCompleted").HasColumnType("bit");
+                b.Property<DateTime>("OrderDate").HasColumnType("datetime2");
+                b.Property<decimal>("TotalAmount").HasColumnType("decimal(18,2)");
+                b.Property<int>("UserId").HasColumnType("int");
+                b.HasKey("OrderId");
+                b.HasIndex("UserId");
+                b.ToTable("Orders");
+            });
 
             modelBuilder.Entity("DataAccess_Layer.Models.UserModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                b.Property<string>("EmailId").IsRequired().HasColumnType("nvarchar(max)");
+                b.Property<string>("FullName").IsRequired().HasColumnType("nvarchar(max)");
+                b.Property<string>("MobileNumber").IsRequired().HasColumnType("nvarchar(max)");
+                b.Property<string>("Password").IsRequired().HasColumnType("nvarchar(max)");
+                b.Property<string>("RefreshToken").HasColumnType("nvarchar(max)");
+                b.Property<DateTime>("RefreshTokenExpiryTime").HasColumnType("datetime2");
+                b.Property<string>("Role").IsRequired().HasColumnType("nvarchar(max)");
+                b.HasKey("Id");
+                b.ToTable("Users");
+            });
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+            modelBuilder.Entity("DataAccess_Layer.Models.WishlistModel", b =>
+            {
+                b.Property<int>("userId").HasColumnType("int").HasColumnOrder(0);
+                b.Property<int>("bookId").HasColumnType("int").HasColumnOrder(1);
+                b.HasKey("userId", "bookId");
+                b.HasIndex("bookId");
+                b.ToTable("Wishlists");
+            });
 
-                    b.Property<string>("EmailId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MobileNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("RefreshTokenExpiryTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
+            // Relationships
             modelBuilder.Entity("DataAccess_Layer.Models.CartModel", b =>
-                {
-                    b.HasOne("DataAccess_Layer.Models.BookModel", "Book")
-                        .WithMany()
-                        .HasForeignKey("bookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-                });
+            {
+                b.HasOne("DataAccess_Layer.Models.BookModel", "Book")
+                    .WithMany()
+                    .HasForeignKey("bookId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+                b.Navigation("Book");
+            });
 
             modelBuilder.Entity("DataAccess_Layer.Models.CustomerModel", b =>
-                {
-                    b.HasOne("DataAccess_Layer.Models.UserModel", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
+            {
+                b.HasOne("DataAccess_Layer.Models.UserModel", "User")
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+                b.Navigation("User");
+            });
 
             modelBuilder.Entity("DataAccess_Layer.Models.OrderModel", b =>
-                {
-                    b.HasOne("DataAccess_Layer.Models.UserModel", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("DataAccess_Layer.Models.UserModel", "User")
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+                b.Navigation("User");
+            });
 
-                    b.Navigation("User");
-                });
+            modelBuilder.Entity("DataAccess_Layer.Models.WishlistModel", b =>
+            {
+                b.HasOne("DataAccess_Layer.Models.BookModel", "Book")
+                    .WithMany()
+                    .HasForeignKey("bookId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("DataAccess_Layer.Models.UserModel", "User")
+                    .WithMany()
+                    .HasForeignKey("userId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Book");
+                b.Navigation("User");
+            });
+
 #pragma warning restore 612, 618
         }
     }

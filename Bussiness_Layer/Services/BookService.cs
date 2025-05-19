@@ -25,10 +25,11 @@ namespace Bussiness_Layer.Services
         public Task<BookModel?> UpdateBookAsync(int id, BookModel book) => _repository.UpdateBookAsync(id, book);
         public Task<bool> DeleteBookAsync(int id) => _repository.DeleteBookAsync(id);
 
-        public async Task<IEnumerable<BookModel>> SearchBooksAsync( string? author)
+        public async Task<IEnumerable<BookModel>> SearchBooksAsync(string searchText)
         {
-            return await _repository.SearchBooksAsync( author);
+            return await _repository.SearchBooksAsync(searchText);
         }
+
 
         public async Task<IEnumerable<BookModel>> SortBooksByPriceAsync(string price)
         {

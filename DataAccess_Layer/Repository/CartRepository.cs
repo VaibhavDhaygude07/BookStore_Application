@@ -55,7 +55,7 @@ namespace DataAccess_Layer.Repository
         public List<CartModel> GetCartItems(int userId)
         {
             return _context.Carts
-                .Where(c => c.userId == userId)
+                .Where(c => c.userId == userId && c.isPurchased==false)
                 .Include(c => c.Book) 
                 .ToList();
         }
@@ -108,6 +108,8 @@ namespace DataAccess_Layer.Repository
 
             return false;
         }
+
+     
 
 
         public CartModel PurchaseCartItem(int cartItemId)

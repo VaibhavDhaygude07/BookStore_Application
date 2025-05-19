@@ -16,6 +16,6 @@ namespace Bussiness_Layer.Interfaces
         Task<bool> ResetPasswordAsync(string email, string newPassword);
         Task<UserModel> GetUserByEmailAsync(string email);
         Task UpdateUserAsync(UserModel user);
-
+        Task<bool> CheckPasswordAsync(UserModel user, string password);
     }
 }

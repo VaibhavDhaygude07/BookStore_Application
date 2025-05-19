@@ -36,7 +36,23 @@ namespace Book_Store.Controllers
                 });
             }
 
-            var userIdClaim = User.FindFirst("id") ?? User.FindFirst("sub") ?? User.FindFirst(ClaimTypes.NameIdentifier);
+
+           
+
+            var userIdClaim = User.FindFirst("id") ??
+                              User.FindFirst("sub") ??
+                              User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new ResponseModel<string>
+                {
+                    success = false,
+                    message = "User not authenticated or claim missing",
+                    data = null
+                });
+            }
+
 
             if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
             {
@@ -59,7 +75,7 @@ namespace Book_Store.Controllers
                 });
             }
 
-            // Always add only 1 quantity
+
             var cartItem = new CartModel
             {
                 userId = userId,
@@ -230,7 +246,7 @@ namespace Book_Store.Controllers
             });
         }
 
-
+      
 
         [HttpPost("purchase/{cartItemId}")]
         public async Task<IActionResult> PurchaseCart(int cartItemId)

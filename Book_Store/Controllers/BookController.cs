@@ -125,16 +125,27 @@ namespace Book_Store.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> SearchBooks([FromQuery] string? author)
+        public async Task<IActionResult> SearchBooks([FromQuery] string searchText)
         {
-            var books = await _service.SearchBooksAsync(author);
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                return BadRequest(new ResponseModel<string>
+                {
+                    success = false,
+                    message = "Search text cannot be empty.",
+                    data = null
+                });
+            }
+
+            var books = await _service.SearchBooksAsync(searchText);
             return Ok(new ResponseModel<IEnumerable<BookModel>>
             {
                 success = true,
-                message = "Search completed.",
+                message = "Search successfully.",
                 data = books
             });
         }
+
 
         [HttpGet("sort")]
         public async Task<IActionResult> SortBooksByPrice([FromQuery] string price)

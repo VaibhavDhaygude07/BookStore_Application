@@ -26,7 +26,7 @@ namespace DataAccess_Layer.Repository
                 FullName = adminDto.FullName,
                 EmailId = adminDto.EmailId,
                 MobileNumber = adminDto.MobileNumber,
-                Role = "Admin",
+                //Role = "Admin",
                 Password = BCrypt.Net.BCrypt.HashPassword(adminDto.Password)
             };
 

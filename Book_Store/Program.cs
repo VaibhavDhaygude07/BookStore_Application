@@ -48,6 +48,10 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
 
+builder.Services.AddScoped<IWishlistRepo, WishlistRepository>();
+builder.Services.AddScoped<IWishlistService, WishlistService>();
+
+
 
 
 
@@ -74,15 +78,35 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             {
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 context.Response.ContentType = "application/json";
+
+                
+
+
                 var response = new
                 {
                     success = false,
-                    message = "Unauthorize.",
+                    message = "Unauthorize",
+
                     data = (object)null
                 };
 
                 var json = JsonSerializer.Serialize(response);
                 return context.Response.WriteAsync(json);
+
+            },
+            OnChallenge = context =>
+            {
+                context.HandleResponse();
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "application/json";
+                var result = System.Text.Json.JsonSerializer.Serialize(new
+                {
+                    success = false,
+                    message = "Unauthorized access",
+                    data = (object)null
+                });
+                return context.Response.WriteAsync(result);
+
             }
         };
     });

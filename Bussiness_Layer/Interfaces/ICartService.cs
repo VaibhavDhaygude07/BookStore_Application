@@ -15,9 +15,10 @@ namespace Bussiness_Layer.Interfaces
         Task<CartModel> AddItemToCart(int userId, CartModel cartModel);
         Task<CartModel> UpdateCartItem(int cartId, CartModel cart);
         Task<bool> DeleteCartItem(int cartItemId);
+
+       
         Task<CartModel> PurchaseCartItem(int cartItemId);
         Task<BookModel> GetBookById(int bookId);
-        //Task<IEnumerable<object>> GetCartItemsByUserIdAsync(int userId);
-        //Task<List<CartModel>> GetCartItemsByUserIdAsync(int userId);
+  
     }
 }

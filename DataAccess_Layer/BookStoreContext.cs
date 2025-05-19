@@ -13,6 +13,8 @@ namespace DataAccess_Layer
         public DbSet<BookModel> Books { get; set; }
 
         public DbSet<CartModel> Carts { get; set; }
+        public DbSet<WishlistModel> Wishlists { get; set; }
+
 
         public DbSet<OrderModel> Orders { get; set; }
         public DbSet<CustomerModel> Customers { get; set; }
@@ -20,6 +22,12 @@ namespace DataAccess_Layer
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<WishlistModel>()
+               .HasKey(w => new { w.userId, w.bookId });
+
+            base.OnModelCreating(modelBuilder);
+
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<BookModel>(entity =>

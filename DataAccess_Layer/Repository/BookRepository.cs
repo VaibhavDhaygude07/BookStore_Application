@@ -52,17 +52,15 @@ namespace DataAccess_Layer.Repository
             return true;
         }
 
-        public async Task<IEnumerable<BookModel>> SearchBooksAsync(string? author)
+        public async Task<IEnumerable<BookModel>> SearchBooksAsync(string searchText)
         {
-            IQueryable<BookModel> query = _context.Books;
-
-           
-
-            if (!string.IsNullOrEmpty(author))
-                query = query.Where(b => b.Author.Contains(author));
-
-            return await query.ToListAsync();
+            return await _context.Books
+                .Where(b =>
+                    b.Author.Contains(searchText) ||
+                    b.BookName.Contains(searchText))
+                .ToListAsync();
         }
+
 
         public async Task<IEnumerable<BookModel>> SortBooksByPriceAsync(string price)
         {
